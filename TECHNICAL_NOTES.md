@@ -46,8 +46,6 @@ The SEARCH tool follows a **setup -> index -> search** pipeline:
 
 ### SQLite Schema Created by `setup.py`
 
-**WARNING**: There is a documented/implementation mismatch in `ai-grep`. The docstring at the top of `ai-grep` shows an INCORRECT schema (uses `filepath`, `id`, `fts_files`). The ACTUAL schema is below.
-
 #### `files` table (metadata + content)
 ```sql
 CREATE TABLE IF NOT EXISTS files (
@@ -258,16 +256,6 @@ search_combined()
 - **Requires ripgrep**: `sudo apt install ripgrep`
 - **Python 3.8+**: Uses walrus operator, type hints
 
-### FTS5 False Errors
-
-**Symptom**: "no such table: fts_files" when tables actually exist
-
-**Cause**: The docstring in `ai-grep` documents wrong table name (`fts_files` vs actual `files_fts`)
-
-**Current behavior**: Combined search catches this and falls back to ripgrep-only
-
-**Workaround**: If FTS search fails but DB has tables, ripgrep still provides results
-
 ### Large Files
 
 - Files >1MB may slow indexing significantly
@@ -289,14 +277,6 @@ search_combined()
 ---
 
 ## 7. Debugging Notes for Future Sessions
-
-### Schema Mismatch Symptoms
-
-**Error**: `no such column: filepath`
-**Cause**: Code using wrong column name
-**Fix**: Check column names:
-- Correct: `file_path`, `file_id`, `files`, `files_fts`
-- Wrong (from old docstring): `filepath`, `id`, `fts_files`
 
 ### Stale Database Issues
 
